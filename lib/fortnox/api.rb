@@ -2,10 +2,12 @@ module Fortnox
   class API
     include HTTParty
 
-    base_uri  'https://kund2.fortnox.se/ext/'
+    base_uri  'https://api.fortnox.se/ext/'
     format    :xml
 
     class << self
+      attr_accessor :last_response
+
       def establish_connection(opts={})
         @@token = opts[:token] || ENV['fortnox_token']
         @@database = opts[:database] || ENV['fortnox_database']
@@ -18,7 +20,7 @@ module Fortnox
 
       def run(method, call, attributes={})
         self.query_parameters = attributes[:query] if attributes[:query]
-        self.send(method, "/#{call.to_s}.php", {
+        self.last_response = self.send(method, "/#{call.to_s}.php", {
           :query  => query_parameters,
           :body   => {:xml => build_xml(attributes)}
         })

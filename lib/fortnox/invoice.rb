@@ -17,6 +17,16 @@ module Fortnox
         response['result'] ? response['result']['id'].to_i : false
       end
 
+      def payment(attributes={})
+        response = run :post, :set_invoicepayment, :payment => attributes
+        response['result'] ? response['result']['id'].to_i : false
+      end
+
+      def credit(id)
+        response = run :post, :set_invoice_credit, { :query => { :id => id } }
+        response['result'] ? response['result']['invoice_id'].to_i : false
+      end
+
       def destroy(id)
         response = run :post, :set_invoice_cancel, { :query => { :id => id } }
         response['result'] ? response['result'].to_i : false
@@ -25,6 +35,11 @@ module Fortnox
       def show(id)
         response = run :get, :get_invoice, { :query => { :id => id } }
         response['invoice'] ? response['invoice'] : false
+      end
+
+      def bookkeep(id)
+        response = run :post, :set_invoice_bookkeep, { :query => { :id => id } }
+        response['result'] ? response['result'] : false
       end
 
       def payed
