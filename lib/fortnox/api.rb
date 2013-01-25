@@ -8,30 +8,18 @@ module Fortnox
     class << self
       attr_accessor :last_response
 
-      def establish_connection(opts={})
-        @@token = opts[:token] || ENV['fortnox_token']
-        @@database = opts[:database] || ENV['fortnox_database']
-        @@query_parameters = connection
-      end
+      def establish_connection(*args); end
 
       def connection
-        { :token => @@token, :db => @@database }
+        { :token => ENV['fortnox_token'], :db => ENV['fortnox_database'] }
       end
 
       def run(method, call, attributes={})
-        self.query_parameters = attributes[:query] if attributes[:query]
+        query_parameters = attributes[:query] || {}
         self.last_response = self.send(method, "/#{call.to_s}.php", {
-          :query  => query_parameters,
+          :query  => query_parameters.merge(connection),
           :body   => {:xml => build_xml(attributes)}
         })
-      end
-
-      def query_parameters
-        @@query_parameters
-      end
-
-      def query_parameters=(params={})
-        @@query_parameters = query_parameters.merge(params)
       end
 
       private
