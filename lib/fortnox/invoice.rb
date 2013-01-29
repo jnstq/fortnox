@@ -39,7 +39,7 @@ module Fortnox
 
       def bookkeep(id)
         response = run :post, :set_invoice_bookkeep, { :query => { :id => id } }
-        response['result'] ? response['result']['voucher']['id'] : false
+        response['result'] ? response['result']['voucher']['id'].to_i : false
       end
 
       def payed
